@@ -1,6 +1,6 @@
+// javascript
 import { useState, useEffect } from "react";
 
-// ─── CSS Injection ────────────────────────────────────────────────────────────
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
@@ -8,45 +8,51 @@ const CSS = `
     --bg:#0b0f17;--panel:#0f1626;--panel2:#0c1322;--text:#e9eefc;--muted:#a9b5d1;
     --line:rgba(255,255,255,.10);--accent:#7aa7ff;--accent2:#6ee7ff;--good:#7CFFB2;
     --shadow:0 18px 50px rgba(0,0,0,.45);--radius:18px;
+    --nav-height:64px;
   }
+
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0}
+  html{min-height:100%}
   body{
+    margin:0;
     font-family:'Rajdhani',ui-sans-serif,system-ui,-apple-system,sans-serif;
-    color:var(--text);background:var(--bg);line-height:1.45;min-height:100vh;position:relative;
-  }
-  body::before{
-    content:'';position:fixed;top:0;left:0;right:0;bottom:0;
+    color:var(--text);line-height:1.45;
+    min-height:100vh;min-height:100dvh;
+
     background:
       radial-gradient(1200px 600px at 15% 0%,rgba(122,167,255,.22),transparent 55%),
       radial-gradient(1000px 700px at 85% 10%,rgba(110,231,255,.18),transparent 55%),
-      radial-gradient(900px 600px at 60% 90%,rgba(124,255,178,.08),transparent 55%);
-    pointer-events:none;z-index:-1;
+      radial-gradient(900px 600px at 60% 90%,rgba(124,255,178,.08),transparent 55%),
+      repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(122,167,255,.015) 2px,rgba(122,167,255,.015) 4px),
+      var(--bg);
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-size:cover;
+    position:relative;
   }
-  body::after{
-    content:'';position:fixed;top:0;left:0;right:0;bottom:0;
-    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(122,167,255,.015) 2px,rgba(122,167,255,.015) 4px);
-    pointer-events:none;z-index:1;
-  }
-  #root{position:relative;z-index:2}
-  a{color:inherit;text-decoration:none}
-  a:hover{opacity:.92}
+  body::before{} body::after{}
 
-  .container{max-width:1120px;margin:0 auto;padding:0 20px}
+  #root{position:relative;z-index:2;min-height:100vh;min-height:100dvh}
+  main{min-height:calc(100vh - var(--nav-height));min-height:calc(100dvh - var(--nav-height));padding-top:var(--nav-height)}
 
-  /* NAV */
+  /* Container: remove max-width so header can span full width */
+  .container{width:100%;max-width:none;margin:0;padding:0 20px}
+
+  /* NAV should stretch the full viewport width */
   .nav{
-    position:sticky;top:0;z-index:50;
+    position:sticky;top:0;z-index:50;width:100%;
     backdrop-filter:blur(12px);
     background:linear-gradient(to bottom,rgba(11,15,23,.85),rgba(11,15,23,.70));
     border-bottom:1px solid rgba(122,167,255,.20);
     box-shadow:0 4px 20px rgba(0,0,0,.3);
   }
+  .nav .container{max-width:none} /* explicit override in case of inherited styles */
   .nav::before{
     content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;
     background:linear-gradient(to right,transparent,var(--accent),var(--accent2),transparent);opacity:.5;
   }
-  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;gap:12px}
+
   .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px;cursor:pointer}
   .brand-text{display:flex;flex-direction:column;gap:2px}
   .brand-title{font-size:16px;line-height:1.1;text-transform:uppercase;letter-spacing:1px;font-weight:800;font-family:'Orbitron',sans-serif}
@@ -243,12 +249,12 @@ function injectStyles() {
 
 // ─── Shared Logo SVG ──────────────────────────────────────────────────────────
 const LogoSVG = () => (
-  <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
-    <text x="0" y="150" fontFamily="Orbitron, Arial Black, sans-serif" fontSize="160" fontWeight="900" fill="#2196F3">ARDCO</text>
-    <circle cx="720" cy="100" r="70" fill="none" stroke="#2196F3" strokeWidth="10" />
-    <ellipse cx="720" cy="100" rx="25" ry="40" fill="#2196F3" opacity="0.8" />
-    <ellipse cx="720" cy="100" rx="40" ry="25" fill="#2196F3" opacity="0.8" />
-  </svg>
+    <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="150" fontFamily="Orbitron, Arial Black, sans-serif" fontSize="160" fontWeight="900" fill="#2196F3">ARDCO</text>
+      <circle cx="720" cy="100" r="70" fill="none" stroke="#2196F3" strokeWidth="10" />
+      <ellipse cx="720" cy="100" rx="25" ry="40" fill="#2196F3" opacity="0.8" />
+      <ellipse cx="720" cy="100" rx="40" ry="25" fill="#2196F3" opacity="0.8" />
+    </svg>
 );
 
 // ─── Shared scroll helper — offsets by the sticky nav height ─────────────────
@@ -282,39 +288,39 @@ function Nav() {
 
   const links = [
     { anchor: "service", label: "Service" },
+    { anchor: "order",   label: "How To Order" },
     { anchor: "hubs",    label: "Distribution Hubs" },
-    { anchor: "order",   label: "How It Works" },
     { anchor: "recruit", label: "Recruitment" },
   ];
 
   return (
-    <header className="nav">
-      <div className="container">
-        <div className="nav-inner">
-          <div className="brand" onClick={() => go("top")}>
-            <div className="logo"><LogoSVG /></div>
-            <div className="brand-text">
-              <div className="brand-title">Fuel</div>
-              <div className="brand-subtitle">Manufacture • Delivery</div>
+      <header className="nav">
+        <div className="container">
+          <div className="nav-inner">
+            <div className="brand" onClick={() => go("top")}>
+              <div className="logo"><LogoSVG /></div>
+              <div className="brand-text">
+                <div className="brand-title">Fuel</div>
+                <div className="brand-subtitle">Manufacture • Delivery</div>
+              </div>
             </div>
+
+            <button className={`burger${menuOpen ? " active" : ""}`} onClick={toggle} aria-label="Toggle menu">
+              <span /><span /><span />
+            </button>
+
+            <nav className={`nav-links${menuOpen ? " active" : ""}`} aria-label="Primary">
+              {links.map((l) => (
+                  <button key={l.label} className="btn-nav" onClick={() => go(l.anchor)}>
+                    {l.label}
+                  </button>
+              ))}
+              <button className="btn small primary" onClick={() => go("order")}>Request Delivery</button>
+            </nav>
           </div>
-
-          <button className={`burger${menuOpen ? " active" : ""}`} onClick={toggle} aria-label="Toggle menu">
-            <span /><span /><span />
-          </button>
-
-          <nav className={`nav-links${menuOpen ? " active" : ""}`} aria-label="Primary">
-            {links.map((l) => (
-              <button key={l.label} className="btn-nav" onClick={() => go(l.anchor)}>
-                {l.label}
-              </button>
-            ))}
-            <button className="btn small primary" onClick={() => go("order")}>Request Delivery</button>
-          </nav>
         </div>
-      </div>
-      <div className={`overlay${menuOpen ? " active" : ""}`} onClick={close} />
-    </header>
+        <div className={`overlay${menuOpen ? " active" : ""}`} onClick={close} />
+      </header>
   );
 }
 
@@ -334,190 +340,190 @@ function Home() {
   ];
 
   return (
-    <>
-      {/* ── Hero ── */}
-      <section className="hero route-view">
-        <div className="container">
-          <div className="hero-grid">
-            <div className="stack">
-              <div className="kicker"><span className="dot" />&nbsp;Reliable fuel supply for structures &amp; reactions</div>
-              <h1>Fuel blocks, delivered.<br />Fast. Reliable. Competitive.</h1>
-              <p className="lead">
-                ARDCO is an EVE Online industrial corporation with one singular focus:{" "}
-                <strong>reliable, competitively priced fuel block manufacture and delivery throughout New Eden.</strong>{" "}
-                Order once or set up a monthly recurring supply plan and keep your operations running without interruption.
-              </p>
-              <div className="hero-ctas">
-                <a className="btn primary" href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer">Contact on Discord</a>
-                <button className="btn" onClick={() => scrollToId("order")}>Place an Order</button>
+      <>
+        {/* ── Hero ── */}
+        <section className="hero route-view">
+          <div className="container">
+            <div className="hero-grid">
+              <div className="stack">
+                <div className="kicker"><span className="dot" />&nbsp;Reliable fuel supply for structures &amp; reactions</div>
+                <h1>Fuel blocks, delivered.<br />Fast. Reliable. Competitive.</h1>
+                <p className="lead">
+                  ARDCO is an EVE Online industrial corporation with one singular focus:{" "}
+                  <strong>reliable, competitively priced fuel block manufacture and delivery throughout New Eden.</strong>{" "}
+                  Order once or set up a monthly recurring supply plan and keep your operations running without interruption.
+                </p>
+                <div className="hero-ctas">
+                  <a className="btn primary" href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer">Contact on Discord</a>
+                  <button className="btn" onClick={() => scrollToId("order")}>Place an Order</button>
+                </div>
+                <div className="fineprint">
+                  Prefer in-game? Join <span className="mono">"ARDCO Fuel"</span> for delivery requests or <span className="mono">"ARDCO Recruitment"</span> if you want to join the project.
+                </div>
               </div>
-              <div className="fineprint">
-                Prefer in-game? Join <span className="mono">"ARDCO Fuel"</span> for delivery requests or <span className="mono">"ARDCO Recruitment"</span> if you want to join the project.
+
+              <div className="card pad" style={{ overflow: "hidden" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <div>
+                    <div className="card-title">See ARDCO in action</div>
+                    <div className="badge">Operations &amp; progress series</div>
+                  </div>
+                  <a className="btn small" href="https://www.youtube.com/watch?v=wOUjS0Fgc_I" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
+                </div>
+                <div className="iframe-box" aria-label="Embedded YouTube video">
+                  <iframe
+                      src="https://www.youtube-nocookie.com/embed/wOUjS0Fgc_I"
+                      title="ARDCO Operations & Progress"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      loading="lazy"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Service ── */}
+        <section className="section" id="service">
+          <div className="container">
+            <div className="grid-3">
+              {[
+                {
+                  title: "Fuel Blocks",
+                  desc: "Supply for structures and reactions — manufactured with consistency and delivered with care.",
+                  items: ["Single deliveries", "Monthly recurring orders", "Volume-friendly support"],
+                },
+                {
+                  title: "Fast Delivery",
+                  desc: "We're set up to move fuel efficiently, so you spend less time sourcing and more time building.",
+                  items: ["Clear communication", "Dependable logistics", "Built for uptime"],
+                },
+                {
+                  title: "Competitive Pricing",
+                  desc: "Our model is designed for long-term operators who value predictable supply and fair rates.",
+                  items: ["Contract-friendly terms", "Simple, no-drama service", "Focused on repeat customers"],
+                },
+              ].map((c) => (
+                  <div className="card pad" key={c.title}>
+                    <div className="card-title">{c.title}</div>
+                    <p>{c.desc}</p>
+                    <ul className="list">
+                      {c.items.map((i) => <li key={i}>{i}</li>)}
+                    </ul>
+                  </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── How to Order ── */}
+        <section className="section" id="order">
+          <div className="container">
+            <div className="card pad">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
+                <div className="stack" style={{ gap: 8 }}>
+                  <div className="badge">Place Your Order</div>
+                  <h2 style={{ margin: 0 }}>How to Order</h2>
+                  <p>
+                    Tell us what you need and where you need it. You'll get an immediate quote based on ESI sales data and a reference for your in-game contract.
+                  </p>
+                </div>
+              </div>
+
+              <div className="divider" />
+
+              <div className="order-steps">
+                {orderSteps.map((txt, i) => (
+                    <div className="step order-step" key={i}>
+                      <div className="num" style={{ marginBottom: 0, flexShrink: 0 }}>{i + 1}</div>
+                      <span style={{ color: "var(--muted)", fontSize: 14 }}>{txt}</span>
+                    </div>
+                ))}
+              </div>
+
+              <div className="divider" />
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <span style={{ color: "var(--muted)", fontSize: 14 }}>Ready to get started? Place your order now and we'll handle the rest.</span>
+                <a className="btn primary" href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer" style={{ fontSize: 15, padding: "14px 28px" }}>
+                  Order Now
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Distribution Hubs ── */}
+        <section className="section" id="hubs">
+          <div className="container">
+            <div className="card pad">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
+                <div className="stack" style={{ gap: 8 }}>
+                  <h2 style={{ margin: 0 }}>Distribution Hubs</h2>
+                  <p>
+                    To keep delivery times low and supply dependable, ARDCO operates regional fuel distribution hubs across key markets.
+                  </p>
+                </div>
+                <div className="badge">Active hubs</div>
+              </div>
+
+              <div className="divider" />
+
+              <div className="hub-grid">
+                {hubs.map((h) => (
+                    <div className={`step${h.soon ? " soon" : ""}`} key={h.name}>
+                      {h.soon && <div className="soon-badge">Coming Soon</div>}
+                      <div className="num" aria-hidden="true">◎</div>
+                      <h3>{h.name}</h3>
+                      <p>{h.desc}</p>
+                    </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* ── Recruitment ── */}
+        <section className="section" id="recruit">
+          <div className="container">
+            <div className="card cta">
+              <div style={{ maxWidth: "72ch" }}>
+                <h2>Build the fuel network with us</h2>
+                <p>
+                  ARDCO's goal is to become <strong>THE supplier of fuel across New Eden</strong>.
+                  We're looking for pilots drawn to mining, logistics, and manufacturing who want to work together toward a clear objective
+                  inside a functioning framework. Experience level doesn't matter.
+                </p>
+                <p style={{ marginTop: 10, color: "var(--muted)" }}>
+                  Note: Our progress is documented in an ongoing YouTube series — you should be comfortable with light publicity / being mentioned in videos.
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <a className="btn primary" href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer">Talk to a recruiter</a>
+                <a className="btn" href="https://www.youtube.com/watch?v=wOUjS0Fgc_I" target="_blank" rel="noopener noreferrer">Watch the series</a>
+                <button className="btn" onClick={() => scrollToId("order")}>Request delivery</button>
               </div>
             </div>
 
-            <div className="card pad" style={{ overflow: "hidden" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <footer>
+              <div className="foot-grid">
                 <div>
-                  <div className="card-title">See ARDCO in action</div>
-                  <div className="badge">Operations &amp; progress series</div>
+                  <div style={{ fontWeight: 700, color: "rgba(233,238,252,.78)" }}>ARDCO Fuel</div>
+                  <div>Fuel block manufacture &amp; delivery service across New Eden.</div>
                 </div>
-                <a className="btn small" href="https://www.youtube.com/watch?v=wOUjS0Fgc_I" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
-              </div>
-              <div className="iframe-box" aria-label="Embedded YouTube video">
-                <iframe
-                  src="https://www.youtube-nocookie.com/embed/wOUjS0Fgc_I"
-                  title="ARDCO Operations & Progress"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Service ── */}
-      <section className="section" id="service">
-        <div className="container">
-          <div className="grid-3">
-            {[
-              {
-                title: "Fuel Blocks",
-                desc: "Supply for structures and reactions — manufactured with consistency and delivered with care.",
-                items: ["Single deliveries", "Monthly recurring orders", "Volume-friendly support"],
-              },
-              {
-                title: "Fast Delivery",
-                desc: "We're set up to move fuel efficiently, so you spend less time sourcing and more time building.",
-                items: ["Clear communication", "Dependable logistics", "Built for uptime"],
-              },
-              {
-                title: "Competitive Pricing",
-                desc: "Our model is designed for long-term operators who value predictable supply and fair rates.",
-                items: ["Contract-friendly terms", "Simple, no-drama service", "Focused on repeat customers"],
-              },
-            ].map((c) => (
-              <div className="card pad" key={c.title}>
-                <div className="card-title">{c.title}</div>
-                <p>{c.desc}</p>
-                <ul className="list">
-                  {c.items.map((i) => <li key={i}>{i}</li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How to Order ── */}
-      <section className="section" id="order">
-        <div className="container">
-          <div className="card pad">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
-              <div className="stack" style={{ gap: 8 }}>
-                <div className="badge">Place Your Order</div>
-                <h2 style={{ margin: 0 }}>How to Order</h2>
-                <p>
-                  Tell us what you need and where you need it. You'll get an immediate quote based on ESI sales data and a reference for your in-game contract.
-                </p>
-              </div>
-            </div>
-
-            <div className="divider" />
-
-            <div className="order-steps">
-              {orderSteps.map((txt, i) => (
-                <div className="step order-step" key={i}>
-                  <div className="num" style={{ marginBottom: 0, flexShrink: 0 }}>{i + 1}</div>
-                  <span style={{ color: "var(--muted)", fontSize: 14 }}>{txt}</span>
+                <div style={{ textAlign: "right" }}>
+                  <div>Discord: <a href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer">discord.gg/ZRrZawDSyP</a></div>
+                  <div>YouTube: <a href="https://www.youtube.com/watch?v=wOUjS0Fgc_I" target="_blank" rel="noopener noreferrer">wOUjS0Fgc_I</a></div>
+                  <div>In-game: <span className="mono">"ARDCO Fuel"</span> • <span className="mono">"ARDCO Recruitment"</span></div>
                 </div>
-              ))}
-            </div>
-
-            <div className="divider" />
-
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <span style={{ color: "var(--muted)", fontSize: 14 }}>Ready to get started? Place your order now and we'll handle the rest.</span>
-              <a className="btn primary" href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer" style={{ fontSize: 15, padding: "14px 28px" }}>
-                Order Now
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Distribution Hubs ── */}
-      <section className="section" id="hubs">
-        <div className="container">
-          <div className="card pad">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, flexWrap: "wrap" }}>
-              <div className="stack" style={{ gap: 8 }}>
-                <h2 style={{ margin: 0 }}>Distribution Hubs</h2>
-                <p>
-                  To keep delivery times low and supply dependable, ARDCO operates regional fuel distribution hubs across key markets.
-                </p>
               </div>
-              <div className="badge">Active hubs</div>
-            </div>
-
-            <div className="divider" />
-
-            <div className="hub-grid">
-              {hubs.map((h) => (
-                <div className={`step${h.soon ? " soon" : ""}`} key={h.name}>
-                  {h.soon && <div className="soon-badge">Coming Soon</div>}
-                  <div className="num" aria-hidden="true">◎</div>
-                  <h3>{h.name}</h3>
-                  <p>{h.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* ── Recruitment ── */}
-      <section className="section" id="recruit">
-        <div className="container">
-          <div className="card cta">
-            <div style={{ maxWidth: "72ch" }}>
-              <h2>Build the fuel network with us</h2>
-              <p>
-                ARDCO's goal is to become <strong>THE supplier of fuel across New Eden</strong>.
-                We're looking for pilots drawn to mining, logistics, and manufacturing who want to work together toward a clear objective
-                inside a functioning framework. Experience level doesn't matter.
-              </p>
-              <p style={{ marginTop: 10, color: "var(--muted)" }}>
-                Note: Our progress is documented in an ongoing YouTube series — you should be comfortable with light publicity / being mentioned in videos.
-              </p>
-            </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a className="btn primary" href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer">Talk to a recruiter</a>
-              <a className="btn" href="https://www.youtube.com/watch?v=wOUjS0Fgc_I" target="_blank" rel="noopener noreferrer">Watch the series</a>
-              <button className="btn" onClick={() => scrollToId("order")}>Request delivery</button>
-            </div>
-          </div>
-
-          <footer>
-            <div className="foot-grid">
-              <div>
-                <div style={{ fontWeight: 700, color: "rgba(233,238,252,.78)" }}>ARDCO Fuel</div>
-                <div>Fuel block manufacture &amp; delivery service across New Eden.</div>
+              <div style={{ marginTop: 12 }}>
+                <span style={{ opacity: .85 }}>©</span> ARDCO • Not affiliated with CCP Games • EVE Online is a trademark of CCP Games.
               </div>
-              <div style={{ textAlign: "right" }}>
-                <div>Discord: <a href="https://discord.gg/ZRrZawDSyP" target="_blank" rel="noopener noreferrer">discord.gg/ZRrZawDSyP</a></div>
-                <div>YouTube: <a href="https://www.youtube.com/watch?v=wOUjS0Fgc_I" target="_blank" rel="noopener noreferrer">wOUjS0Fgc_I</a></div>
-                <div>In-game: <span className="mono">"ARDCO Fuel"</span> • <span className="mono">"ARDCO Recruitment"</span></div>
-              </div>
-            </div>
-            <div style={{ marginTop: 12 }}>
-              <span style={{ opacity: .85 }}>©</span> ARDCO • Not affiliated with CCP Games • EVE Online is a trademark of CCP Games.
-            </div>
-          </footer>
-        </div>
-      </section>
-    </>
+            </footer>
+          </div>
+        </section>
+      </>
   );
 }
 
@@ -526,9 +532,9 @@ export default function App() {
   useEffect(() => { injectStyles(); }, []);
 
   return (
-    <div id="root">
-      <Nav />
-      <main><Home /></main>
-    </div>
+      <div id="root">
+        <Nav />
+        <main><Home /></main>
+      </div>
   );
 }
