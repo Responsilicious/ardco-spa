@@ -602,7 +602,7 @@ ardco-fuel/
 └── vite.config.js              # Vite config — set `base` here to match your deploy path
 ```
 
----
+--- 
 
 ## License
 
