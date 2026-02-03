@@ -4,6 +4,9 @@ Static marketing site for [ARDCO Fuel](https://discord.gg/ZRrZawDSyP) — an EVE
 
 Built with **React + Vite**. Produces a folder of plain static files that can be served anywhere.
 
+<img width="1407" height="819" alt="Screenshot 2026-02-03 at 00 17 44" src="https://github.com/user-attachments/assets/9b3eb3bf-36f4-440f-a766-66509d2909ff" />
+
+
 ---
 
 ## Prerequisites
